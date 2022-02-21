@@ -206,6 +206,7 @@ def trim(samplename, trimdir, rawdir):
         command = subprocess.Popen([variables["gzip"],'-dc', file2], stdout=subprocess.PIPE)
         strout = subprocess.check_output(command, encoding='UTF-8')
         outfile1.writelines(strout)
+
         command.wait()
         outfile2.close()
     else:
