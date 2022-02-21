@@ -199,12 +199,14 @@ def trim(samplename, trimdir, rawdir):
         outfile1 = open(tempdir+"/"+samplename+variables["pairID1"]+".fastq", 'w')
         command = subprocess.Popen([variables["gzip"],'-dc', file1], stdout=subprocess.PIPE)
         strout = subprocess.check_output(command, encoding='UTF-8')
-        outfile1.writelines(strout)        command.wait()
+        outfile1.writelines(strout)
+        command.wait()
         outfile1.close()
         outfile2 = open(tempdir+"/"+samplename+variables["pairID2"]+".fastq", 'w')
         command = subprocess.Popen([variables["gzip"],'-dc', file2], stdout=subprocess.PIPE)
         strout = subprocess.check_output(command, encoding='UTF-8')
-        outfile1.writelines(strout)        command.wait()
+        outfile1.writelines(strout)
+        command.wait()
         outfile2.close()
     else:
         #copy original files to tempfile, temp directory will be removed afterwards
