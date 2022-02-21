@@ -28,10 +28,9 @@ variables["megantools"] = "tools"
 variables["metaxa"] = "metaxa2"
 
 variables["diamondindex"] = "diamond.dmnd"
-variables["taxonomy"] = "acc2tax.abin"
-variables["eggnog"] = "acc2eggnog.abin"
-variables["interpro"] = "acc2interpro.abin"
-variables["seed"] = "acc2seed.abin"
+variables["taxonomy"] = "megan-nucl.db"
+variables["mdb"] = "megan-map.db"
+
 
 
 variables["trimwindow"] = 0
@@ -192,19 +191,20 @@ def trim(samplename, trimdir, rawdir):
     if variables["compressed"]:
         outfile1 = open(tempdir+"/"+samplename+".fastq", 'w')
         command = subprocess.Popen([variables["gzip"],'-dc', file1], stdout=subprocess.PIPE)
-        outfile1.writelines(command.stdout)
+        strout = subprocess.check_output(command, encoding='UTF-8')
+        outfile1.writelines(strout)
         command.wait()
         outfile1.close()
     
         outfile1 = open(tempdir+"/"+samplename+variables["pairID1"]+".fastq", 'w')
         command = subprocess.Popen([variables["gzip"],'-dc', file1], stdout=subprocess.PIPE)
-        outfile1.writelines(command.stdout)
-        command.wait()
+        strout = subprocess.check_output(command, encoding='UTF-8')
+        outfile1.writelines(strout)        command.wait()
         outfile1.close()
         outfile2 = open(tempdir+"/"+samplename+variables["pairID2"]+".fastq", 'w')
         command = subprocess.Popen([variables["gzip"],'-dc', file2], stdout=subprocess.PIPE)
-        outfile2.writelines(command.stdout)
-        command.wait()
+        strout = subprocess.check_output(command, encoding='UTF-8')
+        outfile1.writelines(strout)        command.wait()
         outfile2.close()
     else:
         #copy original files to tempfile, temp directory will be removed afterwards
@@ -289,7 +289,7 @@ def daa2rma(samplename, megandir, aligneddir):
         os.makedirs(os.getcwd()+"/"+megandir)
         c = subprocess.Popen(['chmod', '-R','777',os.getcwd()+"/"+megandir])
         c.wait()
-    precommand = variables["megantools"]+"/daa2rma -i "+aligneddir+"/"+samplename+variables["pairID1"]+"daa "+aligneddir+"/"+samplename+variables["pairID2"]+"daa -o "+megandir+"/"+samplename+".rma6 -p true -a2t "+variables["taxonomy"]+" -a2interpro2go "+variables["interpro"]+" -a2eggnog "+variables["eggnog"]+" -a2seed "+variables["seed"]+" -me "+variables["maxeval"]+" -supp "+variables["minsupp"]
+    precommand = variables["megantools"]+"/daa2rma -i "+aligneddir+"/"+samplename+variables["pairID1"]+"daa "+aligneddir+"/"+samplename+variables["pairID2"]+"daa -o "+megandir+"/"+samplename+".rma6 -p true -a2t "+variables["taxonomy"]+" -mdb "+variables["mdb"]+" -me "+variables["maxeval"]+" -supp "+variables["minsupp"]
     command = subprocess.Popen(precommand.split())
     command.wait()
     loghandle.write(str(datetime.now())+": Finished generating RMA file successfully\n")
