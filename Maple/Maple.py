@@ -212,13 +212,19 @@ def trim(samplename, trimdir, rawdir):
         #strout = subprocess.check_output(command, encoding='UTF-8')
         #outfile2.writelines(strout)
         #outfile2.close()
+        f1 = re.sub("\.gz", "", file1)
+        f2 = re.sub("\.gz", "", file2)
+        command = subprocess.Popen(['mv', f1, tempdir + "/" + samplename + variables["pairID1"] + ".fastq"])
+        command.wait()
+        command = subprocess.Popen(['mv', f2, tempdir + "/" + samplename + variables["pairID2"] + ".fastq"])
+        command.wait()
 
-
-    # copy original files to tempfile, temp directory will be removed afterwards
-    command = subprocess.Popen(['cp', file1, tempdir + "/" + samplename + variables["pairID1"] + ".fastq"])
-    command.wait()
-    command = subprocess.Popen(['cp', file2, tempdir + "/" + samplename + variables["pairID2"] + ".fastq"])
-    command.wait()
+    else:
+        # copy original files to tempfile, temp directory will be removed afterwards
+        command = subprocess.Popen(['cp', file1, tempdir + "/" + samplename + variables["pairID1"] + ".fastq"])
+        command.wait()
+        command = subprocess.Popen(['cp', file2, tempdir + "/" + samplename + variables["pairID2"] + ".fastq"])
+        command.wait()
 
     command = subprocess.Popen([variables["perl"], variables["prinseq"],
                                 '-fastq', tempdir + "/" + samplename + variables["pairID1"] + ".fastq", '-fastq2',
