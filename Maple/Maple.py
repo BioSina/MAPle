@@ -33,6 +33,7 @@ variables["mdb"] = "megan-map.db"
 variables["trimwindow"] = 0
 variables["trimqual"] = 0
 variables["minlength"] = 0
+variables["lefttrim"] = 0
 
 variables["maxeval"] = 0.0
 variables["minsupp"] = 0.0
