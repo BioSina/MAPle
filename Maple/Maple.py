@@ -105,9 +105,15 @@ def setupFiles(indir, outdir):
     print("Setting up input"),
     if not os.path.exists(outdir):
         os.makedirs(outdir)
-    global loghandle
+    #global loghandle
     logname = outdir + "/" + variables["name"] + ".log"
-    logging.basicConfig(filename=logname, encoding='utf-8', level=logging.DEBUG)
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    handler = logging.FileHandler(logname, 'w', 'utf-8')
+    formatter = logging.Formatter('%(name)s %(message)s')
+    handler.setFormatter(formatter)  # Pass handler as a parameter, not assign
+    root_logger.addHandler(handler)
+    #logging.basicConfig(filename=logname, encoding='utf-8', level=logging.DEBUG)
     #loghandle = open(outdir + "/" + variables["name"] + ".log", 'w')
     logging.info(str(datetime.now()) + ": Started Setup\n")
     #loghandle.write(str(datetime.now()) + ": Started Setup\n")
