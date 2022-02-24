@@ -249,7 +249,8 @@ def trim(samplename, trimdir, rawdir):
                                 tempdir + "/" + samplename + variables["pairID2"] + "fastq", '-log',
                                 trimdir + "/" + samplename + ".log", '-trim_qual_window', str(variables["trimwindow"]),
                                 '-trim_qual_right', str(variables["trimqual"]), '-trim_left',
-                                str(variables["lefttrim"]),
+                                str(variables["lefttrim"], '-min_len',
+                                str(variables["minlength"])),
                                 '-out_good', trimdir + "/" + samplename + ".trim.good",
                                 '-out_bad', trimdir + "/" + samplename + ".trim.bad"])
     command.wait()
