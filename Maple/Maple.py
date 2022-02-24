@@ -163,7 +163,8 @@ def setupFiles(indir, outdir):
 def fastqc(samplename, indir, mode):
     file1 = ""
     file2 = ""
-    loghandle.write(str(datetime.now()) + ": Started QC\n")
+    logging.info(str(datetime.now()) + ": Started QC\n")
+    #loghandle.write(str(datetime.now()) + ": Started QC\n")
     if not os.path.exists(os.getcwd() + "/" + indir):
         sys.stderr.write(
             "[FATAL ERROR] The directory on which you are running FastQC does not seem to exist. Please check file permissions and disk space.")
