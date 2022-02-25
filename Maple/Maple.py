@@ -253,13 +253,13 @@ def trim(samplename, trimdir, rawdir):
     #                             str(variables["minlength"]),
     #                             '-out_good', trimdir + "/" + samplename + ".trim.good",
     #                             '-out_bad', trimdir + "/" + samplename + ".trim.bad"])
+    outname1 = trimdir + "/" + samplename + ".trimmed" + variables["pairID1"] + "fastq"
+    outname2 = trimdir + "/" + samplename + ".trimmed" + variables["pairID2"] + "fastq"
 
     command = subprocess.Popen(variables["prinseq"], '-fastq', file1, '-fastq2', file2, '-threads', '30',
                                '-trim_qual_window', str(variables["trimwindow"]), '-trim_qual_right',
                                str(variables["trimqual"]), '-trim_left', str(variables["lefttrim"]), '-min_len',
-                               str(variables["minlength"]), '-out_good',
-                               trimdir + "/" + samplename + ".trimmed" + variables["pairID1"] + "fastq",
-                               '-out_good2', trimdir + "/" + samplename + ".trimmed" + variables["pairID2"] + "fastq")
+                               str(variables["minlength"]), '-out_good', outname1, '-out_good2', outname2)
     command.wait()
 
      # shutil.rmtree(os.getcwd() + "/" + tempdir)
