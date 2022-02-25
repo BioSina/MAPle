@@ -20,7 +20,7 @@ variables = dict()
 variables["FASTQC"] = "fastqc"
 variables["gzip"] = "gzip"
 variables["perl"] = "perl"
-variables["prinseq"] = "prinseq-lite.pl"
+variables["prinseq"] = "prinseq++"
 variables["megan"] = "MEGAN"
 variables["diamond"] = "diamond"
 variables["malt"] = "malt-run"
@@ -192,15 +192,15 @@ def fastqc(samplename, indir, mode):
     #loghandle.write(str(datetime.now()) + ": Finished QC successfully\n")
 
 
-# Trimming paired reads with prinseq-lite
+# Trimming paired reads with prinseq++
 def trim(samplename, trimdir, rawdir):
     logging.info(str(datetime.now()) + ": Started trimming\n")
     #loghandle.write(str(datetime.now()) + ": Started trimming\n")
     if not os.path.exists(os.getcwd() + "/" + trimdir):
         os.makedirs(os.getcwd() + "/" + trimdir)
-    tempdir = trimdir + "/temp"
-    if not os.path.exists(os.getcwd() + "/" + tempdir):
-        os.makedirs(os.getcwd() + "/" + tempdir)
+    # tempdir = trimdir + "/temp"
+    # if not os.path.exists(os.getcwd() + "/" + tempdir):
+    #     os.makedirs(os.getcwd() + "/" + tempdir)
     thedir = os.getcwd() + "/" + rawdir
     for i in os.listdir(thedir):
         temp = thedir + "/" + i
@@ -209,63 +209,60 @@ def trim(samplename, trimdir, rawdir):
                 file1 = temp
             if i.startswith(samplename + variables["pairID2"]):
                 file2 = temp
-    if variables["compressed"]:
-        # outfile1 = open(tempdir + "/" + samplename + ".fastq", 'w')
-        # command = subprocess.Popen([variables["gzip"], '-dc', file1], stdout=subprocess.PIPE)
-        # command.wait()
-        # strout = subprocess.check_output(command, encoding='UTF-8')
-        # outfile1.writelines(strout)
-        # outfile1.close()
+    # if variables["compressed"]:
+    #     # outfile1 = open(tempdir + "/" + samplename + ".fastq", 'w')
+    #     # command = subprocess.Popen([variables["gzip"], '-dc', file1], stdout=subprocess.PIPE)
+    #     # command.wait()
+    #     # strout = subprocess.check_output(command, encoding='UTF-8')
+    #     # outfile1.writelines(strout)
+    #     # outfile1.close()
+    #
+    #     #outfile1 = open(tempdir + "/" + samplename + variables["pairID1"] + ".fastq", 'w')
+    #     command = subprocess.Popen([variables["gzip"], '-dk', file1])
+    #     command.wait()
+    #     #strout = subprocess.check_output(command, encoding='UTF-8')
+    #     #outfile1.writelines(strout)
+    #     #outfile1.close()
+    #
+    #     #outfile2 = open(tempdir + "/" + samplename + variables["pairID2"] + ".fastq", 'w')
+    #     command = subprocess.Popen([variables["gzip"], '-dk', file2])
+    #     command.wait()
+    #     #strout = subprocess.check_output(command, encoding='UTF-8')
+    #     #outfile2.writelines(strout)
+    #     #outfile2.close()
+    #     f1 = re.sub("\.gz", "", file1)
+    #     f2 = re.sub("\.gz", "", file2)
+    #     command = subprocess.Popen(['mv', f1, tempdir + "/" + samplename + variables["pairID1"] + "fastq"])
+    #     command.wait()
+    #     command = subprocess.Popen(['mv', f2, tempdir + "/" + samplename + variables["pairID2"] + "fastq"])
+    #     command.wait()
+    #
+    # else:
+    #     # copy original files to tempfile, temp directory will be removed afterwards
+    #     command = subprocess.Popen(['cp', file1, tempdir + "/" + samplename + variables["pairID1"] + "fastq"])
+    #     command.wait()
+    #     command = subprocess.Popen(['cp', file2, tempdir + "/" + samplename + variables["pairID2"] + "fastq"])
+    #     command.wait()
 
-        #outfile1 = open(tempdir + "/" + samplename + variables["pairID1"] + ".fastq", 'w')
-        command = subprocess.Popen([variables["gzip"], '-dk', file1])
-        command.wait()
-        #strout = subprocess.check_output(command, encoding='UTF-8')
-        #outfile1.writelines(strout)
-        #outfile1.close()
+    # command = subprocess.Popen([variables["perl"], variables["prinseq"],
+    #                             '-fastq', tempdir + "/" + samplename + variables["pairID1"] + "fastq", '-fastq2',
+    #                             tempdir + "/" + samplename + variables["pairID2"] + "fastq", '-log',
+    #                             trimdir + "/" + samplename + ".log", '-trim_qual_window', str(variables["trimwindow"]),
+    #                             '-trim_qual_right', str(variables["trimqual"]), '-trim_left',
+    #                             str(variables["lefttrim"]), '-min_len',
+    #                             str(variables["minlength"]),
+    #                             '-out_good', trimdir + "/" + samplename + ".trim.good",
+    #                             '-out_bad', trimdir + "/" + samplename + ".trim.bad"])
 
-        #outfile2 = open(tempdir + "/" + samplename + variables["pairID2"] + ".fastq", 'w')
-        command = subprocess.Popen([variables["gzip"], '-dk', file2])
-        command.wait()
-        #strout = subprocess.check_output(command, encoding='UTF-8')
-        #outfile2.writelines(strout)
-        #outfile2.close()
-        f1 = re.sub("\.gz", "", file1)
-        f2 = re.sub("\.gz", "", file2)
-        command = subprocess.Popen(['mv', f1, tempdir + "/" + samplename + variables["pairID1"] + "fastq"])
-        command.wait()
-        command = subprocess.Popen(['mv', f2, tempdir + "/" + samplename + variables["pairID2"] + "fastq"])
-        command.wait()
-
-    else:
-        # copy original files to tempfile, temp directory will be removed afterwards
-        command = subprocess.Popen(['cp', file1, tempdir + "/" + samplename + variables["pairID1"] + "fastq"])
-        command.wait()
-        command = subprocess.Popen(['cp', file2, tempdir + "/" + samplename + variables["pairID2"] + "fastq"])
-        command.wait()
-
-    command = subprocess.Popen([variables["perl"], variables["prinseq"],
-                                '-fastq', tempdir + "/" + samplename + variables["pairID1"] + "fastq", '-fastq2',
-                                tempdir + "/" + samplename + variables["pairID2"] + "fastq", '-log',
-                                trimdir + "/" + samplename + ".log", '-trim_qual_window', str(variables["trimwindow"]),
-                                '-trim_qual_right', str(variables["trimqual"]), '-trim_left',
-                                str(variables["lefttrim"]), '-min_len',
-                                str(variables["minlength"]),
-                                '-out_good', trimdir + "/" + samplename + ".trim.good",
-                                '-out_bad', trimdir + "/" + samplename + ".trim.bad"])
-    command.wait()
-    newname = samplename + ".trimmed" + variables["pairID1"] + "fastq"
-    outfile = trimdir + "/" + newname
-    infile = trimdir + "/" + samplename + ".trim.good_2.fastq"
-    command = subprocess.Popen(['mv', infile, outfile])
-    command.wait()
-    newname = samplename + ".trimmed" + variables["pairID2"] + "fastq"
-    outfile = trimdir + "/" + newname
-    infile = trimdir + "/" + samplename + ".trim.good_1.fastq"
-    command = subprocess.Popen(['mv', infile, outfile])
+    command = subprocess.Popen(variables["prinseq"], '-fastq', file1, '-fastq2', file2, '-threads', '30',
+                               '-trim_qual_window', str(variables["trimwindow"]), '-trim_qual_right',
+                               str(variables["trimqual"]), '-trim_left', str(variables["lefttrim"]), '-min_len',
+                               str(variables["minlength"]), '-out_good',
+                               trimdir + "/" + samplename + ".trimmed" + variables["pairID1"] + "fastq",
+                               '-out_good2', trimdir + "/" + samplename + ".trimmed" + variables["pairID2"] + "fastq")
     command.wait()
 
-    shutil.rmtree(os.getcwd() + "/" + tempdir)
+     # shutil.rmtree(os.getcwd() + "/" + tempdir)
     logging.info(str(datetime.now()) + ": Finished trimming successfully\n")
     #loghandle.write(str(datetime.now()) + ": Finished trimming successfully\n")
 
